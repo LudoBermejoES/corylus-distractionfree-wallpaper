@@ -39,6 +39,35 @@ All images are stored as WebP (lossy, quality 90) to keep the repository small w
 | `dark-night` | Night scenes and dark/moody tones |
 | `art-other` | Everything else that doesn't fit the categories above |
 
+## Browsing the collection
+
+A static gallery site (`site/`) lets you browse every image, video, and
+animated background by category, preview it, and download it. It's built
+automatically by [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
+on every push to `main` and published to **GitHub Pages**.
+
+The published site itself is small (front-end + a generated JSON index +
+small preview thumbnails/clips) — the full-size media is loaded on demand
+from this repo's raw file URLs, not bundled into the Pages deployment. This
+matters because the repo's media is well over Pages' ~1 GB site limit.
+
+**One-time repo setup** (if Pages isn't already enabled): Settings → Pages →
+Source → "GitHub Actions". After that, every push rebuilds and redeploys the
+site automatically; the URL is shown in the workflow's `deploy` job summary
+(typically `https://<owner>.github.io/<repo>/`).
+
+To preview locally before pushing:
+
+```
+python3 scripts/build_gallery.py
+python3 -m http.server --directory site 8000
+# open http://localhost:8000/
+```
+
+`scripts/build_gallery.py` requires `ffmpeg` (with `libvpx-vp9` support, for
+the short video preview clips) and the `Pillow` Python package (for image
+thumbnails).
+
 ## Updating from upstream
 
 The original collection is tracked as the `upstream` remote:
