@@ -29,8 +29,11 @@ jobs:
       - name: Install Pillow
         run: pip install Pillow
 
-      - name: Verify ffmpeg (preinstalled on ubuntu-latest)
-        run: ffmpeg -version
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Verify ffmpeg has libvpx-vp9 (needed for video preview clips)
+        run: ffmpeg -version && ffmpeg -encoders 2>&1 | grep -q libvpx-vp9
 
       - name: Build gallery
         run: python3 scripts/build_gallery.py
