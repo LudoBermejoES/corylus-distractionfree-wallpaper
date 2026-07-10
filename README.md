@@ -2,6 +2,8 @@
 
 Curated wallpaper and video collection used by [Corylus](https://github.com/LudoBermejoES/corylus) to offer background choices for its distraction-free writing mode.
 
+**Browse the collection:** [ludobermejoes.github.io/corylus-distractionfree-wallpaper](https://ludobermejoes.github.io/corylus-distractionfree-wallpaper/)
+
 ## Origin
 
 This repository is a fork of [mylinuxforwork/wallpaper](https://github.com/mylinuxforwork/wallpaper), the "ML4W Wallpaper Collection" — a personal wallpaper collection originally curated for tiling window managers. Corylus reuses that collection as a starting set of high-quality, distraction-free backgrounds, and adds/replaces images over time to fit its own use case.
@@ -41,20 +43,22 @@ All images are stored as WebP (lossy, quality 90) to keep the repository small w
 
 ## Browsing the collection
 
+**<https://ludobermejoes.github.io/corylus-distractionfree-wallpaper/>**
+
 A static gallery site (`site/`) lets you browse every image, video, and
 animated background by category, preview it, and download it. It's built
 automatically by [`.github/workflows/pages.yml`](.github/workflows/pages.yml)
-on every push to `main` and published to **GitHub Pages**.
+on every push to `main` and published to the URL above via **GitHub Pages**.
 
 The published site itself is small (front-end + a generated JSON index +
 small preview thumbnails/clips) — the full-size media is loaded on demand
 from this repo's raw file URLs, not bundled into the Pages deployment. This
 matters because the repo's media is well over Pages' ~1 GB site limit.
 
-**One-time repo setup** (if Pages isn't already enabled): Settings → Pages →
-Source → "GitHub Actions". After that, every push rebuilds and redeploys the
-site automatically; the URL is shown in the workflow's `deploy` job summary
-(typically `https://<owner>.github.io/<repo>/`).
+Pages is already enabled (Settings → Pages → Source → "GitHub Actions"); every
+push rebuilds and redeploys the site automatically, reusing cached thumbnails
+for unchanged media so a push that only adds one file finishes in seconds, not
+minutes.
 
 To preview locally before pushing:
 
