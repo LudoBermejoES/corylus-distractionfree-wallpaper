@@ -14,6 +14,31 @@ Corylus is a Tauri application; its main repository holds source code, not media
 - Download or update wallpapers independently of the app's release cycle.
 - Diverge from upstream over time — adding, removing, or replacing images for distraction-free mode — without affecting the original collection.
 
+## Structure
+
+All media lives under [images/](images/), organized by category so Corylus can offer a curated picker instead of one flat list. A `videos/` folder will be added alongside it once video backgrounds are supported.
+
+Animated backgrounds live separately under [animated/](animated/), mirroring the same category folder names — only the categories that currently have animated content exist there.
+
+Some images fit more than one category and are duplicated across folders rather than forced into a single bucket.
+
+All images are stored as WebP (lossy, quality 90) to keep the repository small without a visible quality loss. Animated backgrounds use animated WebP instead of GIF for smaller file sizes.
+
+| Category | Description |
+| --- | --- |
+| `nature` | Landscapes, mountains, forests, seas, sunsets |
+| `space` | Planets, nebulae, astronauts, spacecraft |
+| `sci-fi-cyberpunk` | Futuristic tech, neon cityscapes, robots |
+| `fantasy` | Surreal and imaginary scenes, alien worlds |
+| `city-architecture` | Skylines, streets, buildings |
+| `abstract` | Non-representational shapes, patterns, gradients |
+| `anime` | Anime and manga-style art |
+| `vehicles` | Cars, motorcycles, spacecraft in motion |
+| `animals` | Wildlife and creatures |
+| `minimal` | Simple, low-detail compositions |
+| `dark-night` | Night scenes and dark/moody tones |
+| `art-other` | Everything else that doesn't fit the categories above |
+
 ## Updating from upstream
 
 The original collection is tracked as the `upstream` remote:
