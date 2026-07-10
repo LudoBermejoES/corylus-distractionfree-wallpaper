@@ -91,10 +91,48 @@ def thumb_rel_path(kind, category, filename):
     return os.path.join(kind, category, f"{stem}.{ext}")
 
 
-def thumb_is_fresh(src_abs, thumb_abs):
-    if not os.path.isfile(thumb_abs):
-        return False
-    return os.path.getmtime(thumb_abs) >= os.path.getmtime(src_abs)
+CACHE_PATH = os.path.join(THUMBS_DIR, ".build-cache.json")
+
+
+def load_git_blob_hashes():
+    """Map repo-relative path -> git blob SHA, for every tracked file.
+
+    Used (rather than mtime) to decide whether a thumbnail is stale: every CI
+    run does a fresh `actions/checkout`, which stamps every file with the
+    checkout's wall-clock time -- so comparing mtimes would always call every
+    source file "newer" than a cached thumbnail, defeating any cache. A git
+    blob hash only changes when the file's actual content changes, and
+    `git ls-files -s` reads it straight from the index with no file I/O.
+    """
+    result = subprocess.run(
+        ["git", "-C", ROOT, "ls-files", "-s"],
+        capture_output=True, text=True,
+    )
+    hashes = {}
+    if result.returncode != 0:
+        return hashes  # not a git checkout (e.g. ad-hoc local run) -- fall back to "always rebuild"
+    for line in result.stdout.splitlines():
+        # "100644 <sha> 0\t<path>"
+        meta, path = line.split("\t", 1)
+        sha = meta.split()[1]
+        hashes[path] = sha
+    return hashes
+
+
+def load_build_cache():
+    if not os.path.isfile(CACHE_PATH):
+        return {}
+    try:
+        with open(CACHE_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_build_cache(cache):
+    os.makedirs(THUMBS_DIR, exist_ok=True)
+    with open(CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(cache, f)
 
 
 def _probe_duration(src_abs):
@@ -158,15 +196,29 @@ def generate_image_thumb(src_abs, thumb_abs):
 
 def build(repo, branch):
     credits = load_video_credits()
+    blob_hashes = load_git_blob_hashes()
+    old_cache = load_build_cache()
+    new_cache = {}
     items = []
     errors = []
+    regenerated = 0
+    reused = 0
 
     for kind, category, rel_path, abs_path in find_media_files():
         filename = os.path.basename(rel_path)
         thumb_rel = thumb_rel_path(kind, category, filename)
         thumb_abs = os.path.join(THUMBS_DIR, thumb_rel)
+        rel_key = rel_path.replace(os.sep, "/")
 
-        if not thumb_is_fresh(abs_path, thumb_abs):
+        current_hash = blob_hashes.get(rel_key)
+        cached_hash = old_cache.get(rel_key)
+        is_fresh = (
+            current_hash is not None
+            and current_hash == cached_hash
+            and os.path.isfile(thumb_abs)
+        )
+
+        if not is_fresh:
             if kind == "video":
                 ok, err = generate_video_preview(abs_path, thumb_abs)
             else:
@@ -174,12 +226,18 @@ def build(repo, branch):
             if not ok:
                 errors.append(f"{rel_path}: {err.strip()}")
                 continue
+            regenerated += 1
+        else:
+            reused += 1
+
+        if current_hash is not None:
+            new_cache[rel_key] = current_hash
 
         item = {
             "kind": kind,
             "category": category,
             "filename": filename,
-            "rawUrl": raw_url(repo, branch, rel_path.replace(os.sep, "/")),
+            "rawUrl": raw_url(repo, branch, rel_key),
             "thumbUrl": f"thumbs/{thumb_rel.replace(os.sep, '/')}",
         }
 
@@ -190,6 +248,9 @@ def build(repo, branch):
                 item["credit"] = {k: v for k, v in credit.items() if v}
 
         items.append(item)
+
+    print(f"Thumbnails: {regenerated} generated, {reused} reused from cache.")
+    save_build_cache(new_cache)
 
     if errors:
         print("Thumbnail generation failed for:", file=sys.stderr)

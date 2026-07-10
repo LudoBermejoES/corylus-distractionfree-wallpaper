@@ -35,6 +35,21 @@ jobs:
       - name: Verify ffmpeg has libvpx-vp9 (needed for video preview clips)
         run: ffmpeg -version && ffmpeg -encoders 2>&1 | grep -q libvpx-vp9
 
+      # Restores the previous run's generated thumbnails/previews so
+      # build_gallery.py only regenerates media that actually changed (it
+      # compares git blob hashes, not mtimes -- every checkout gives files a
+      # fresh mtime, so mtime comparison can't detect "unchanged" here). Cache
+      # key includes the run number so every run also SAVES a fresh cache;
+      # restore-keys falls back to the most recent prior cache regardless of
+      # exact key match.
+      - name: Restore thumbnail cache
+        uses: actions/cache@v4
+        with:
+          path: site/thumbs
+          key: gallery-thumbs-${{ github.run_id }}
+          restore-keys: |
+            gallery-thumbs-
+
       - name: Build gallery
         run: python3 scripts/build_gallery.py
 
