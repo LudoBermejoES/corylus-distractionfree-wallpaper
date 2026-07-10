@@ -1,34 +1,28 @@
-# ML4W Wallpaper Collection
+# Corylus Distraction-Free Wallpapers
 
-My personal wallpaper collection that fits best to tiling window managers.
+Curated wallpaper and video collection used by [Corylus](https://github.com/LudoBermejoES/corylus) to offer background choices for its distraction-free writing mode.
 
-![image](https://github.com/user-attachments/assets/9f94272d-7278-4599-801c-8b104ca746c8)
+## Origin
 
-## Installation
+This repository is a fork of [mylinuxforwork/wallpaper](https://github.com/mylinuxforwork/wallpaper), the "ML4W Wallpaper Collection" — a personal wallpaper collection originally curated for tiling window managers. Corylus reuses that collection as a starting set of high-quality, distraction-free backgrounds, and adds/replaces images over time to fit its own use case.
 
-Clone the directory from your home directory.
+## Why a separate repository
+
+Corylus is a Tauri application; its main repository holds source code, not media. Bundling this collection there would bloat every clone and checkout with tens of megabytes of images that most contributors never need. Keeping it here instead lets Corylus:
+
+- Reference this repo as a git submodule (`assets/distractionfree-wallpaper`) instead of committing binaries to the app repo's history.
+- Download or update wallpapers independently of the app's release cycle.
+- Diverge from upstream over time — adding, removing, or replacing images for distraction-free mode — without affecting the original collection.
+
+## Updating from upstream
+
+The original collection is tracked as the `upstream` remote:
 
 ```
-cd ~/Pictures # You can also choose a different location
-git clone --depth=1 https://github.com/mylinuxforwork/wallpaper.git
-cd wallpaper/
+git fetch upstream
+git merge upstream/main
 ```
-If you are using the ML4W Dotfiles for Hyprland, you can select the the new wallpaper folder with Waypaper.
 
-## Update
+## License
 
-You can update the wallpapers with
-
-```
-cd ~/Pictures/wallpaper
-git pull
-```
-## Wallpaper Resources
-
-Great download resources for wallpapers are:
-
-https://www.reddit.com/r/wallpapers/
-
-https://4kwallpapers.com
-
-https://buymeacoffee.com/wallsbyjfl/posts/11032
+See [LICENSE](LICENSE).
