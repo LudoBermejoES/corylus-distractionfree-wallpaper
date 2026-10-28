@@ -3471,7 +3471,8 @@
       "likes": 103,
       "views": 6892,
       "license": "Pixabay Content License (free to use, no attribution required) - https://pixabay.com/service/license-summary/",
-      "downloaded_file": "videos/city-architecture/pixabay-197702.mp4"
+      "downloaded_file": "videos/city-architecture/pixabay-197702.mp4",
+      "kept_as_mp4": "VP9 came out 2.6x larger than the h264 source for this clip"
     },
     {
       "source": "pixabay",

@@ -21,9 +21,13 @@ THUMBS_DIR = os.path.join(SITE_DIR, "thumbs")
 INDEX_PATH = os.path.join(SITE_DIR, "gallery-index.json")
 MANIFEST_PATH = os.path.join(ROOT, "videos", "MANIFEST.json")
 
+# .mp4 is listed alongside .webm because VP9 is not always the smaller of the
+# two: a clip that is mostly fine moving detail (rain, snow, noise) can come out
+# several times larger as webm than the h264 source it was made from, and for
+# those we keep the mp4 instead. Corylus plays both (webm, ogg and mp4).
 MEDIA_DIRS = [
     ("images", "image", (".webp",)),
-    ("videos", "video", (".webm",)),
+    ("videos", "video", (".webm", ".mp4")),
     ("animated", "animated", (".webp",)),
 ]
 

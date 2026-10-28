@@ -23,13 +23,27 @@ FFMPEG_CMD = [
 
 
 def find_mp4s():
+    """Every .mp4 under videos/<category>/ that is not marked to be kept.
+
+    VP9 is not always the smaller of the two. A clip that is mostly fine moving
+    detail -- rain, snow, grain -- can come out several times larger as webm
+    than the h264 it was made from, and for those the mp4 is what we ship.
+    Marking one is a `<name>.mp4.keep` file next to it: this script then leaves
+    it alone instead of transcoding it and deleting the source. Corylus plays
+    webm, ogg and mp4, and build_gallery.py indexes both.
+    """
     for cat in sorted(os.listdir(VIDEOS_DIR)):
         cat_dir = os.path.join(VIDEOS_DIR, cat)
         if not os.path.isdir(cat_dir):
             continue
         for fname in sorted(os.listdir(cat_dir)):
-            if fname.lower().endswith(".mp4"):
-                yield cat, os.path.join(cat_dir, fname)
+            if not fname.lower().endswith(".mp4"):
+                continue
+            path = os.path.join(cat_dir, fname)
+            if os.path.exists(path + ".keep"):
+                print(f"keeping {cat}/{fname} (.keep marker)", flush=True)
+                continue
+            yield cat, path
 
 
 def transcode(src_path, dest_path):

@@ -1,0 +1,10 @@
+Kept as mp4 on purpose.
+
+This is a 4K rain overlay: almost every pixel moves every frame, which is the
+worst case for VP9. Transcoded with the repo's usual settings (crf 34) it came
+out at 53.8 MB from a 20.4 MB h264 source — 2.6x larger. The other two rain
+clips added at the same time went the normal way and shrank (18.2 -> 7.5 MB and
+14.8 -> 3.7 MB), so this is about this clip, not about rain or about mp4.
+
+transcode_videos.py skips any .mp4 with a .keep file beside it, and
+build_gallery.py indexes .mp4 as well as .webm. Corylus plays webm, ogg and mp4.
