@@ -3457,6 +3457,51 @@
       "page_url": "https://www.pexels.com/video/stunning-aerial-view-of-philadelphia-at-night-37165566/",
       "license": "Pexels License (free to use, no attribution required) - https://www.pexels.com/license/",
       "downloaded_file": "videos/city-architecture/pexels-37165566.mp4"
+    },
+    {
+      "source": "pixabay",
+      "id": 197702,
+      "category": "city-architecture",
+      "download_url": "https://cdn.pixabay.com/video/2024/01/22/197702-905378386_large.mp4",
+      "width": 3840,
+      "height": 2160,
+      "author": "EnchantedStudios",
+      "author_url": "https://pixabay.com/users/722609/",
+      "page_url": "https://pixabay.com/videos/id-197702/",
+      "likes": 103,
+      "views": 6892,
+      "license": "Pixabay Content License (free to use, no attribution required) - https://pixabay.com/service/license-summary/",
+      "downloaded_file": "videos/city-architecture/pixabay-197702.mp4"
+    },
+    {
+      "source": "pixabay",
+      "id": 366249,
+      "category": "city-architecture",
+      "download_url": "https://cdn.pixabay.com/video/2026/07/24/366249_large.mp4",
+      "width": 3840,
+      "height": 2160,
+      "author": "doktorkleinmusic",
+      "author_url": "https://pixabay.com/users/5871510/",
+      "page_url": "https://pixabay.com/videos/id-366249/",
+      "likes": 23,
+      "views": 592,
+      "license": "Pixabay Content License (free to use, no attribution required) - https://pixabay.com/service/license-summary/",
+      "downloaded_file": "videos/city-architecture/pixabay-366249.mp4"
+    },
+    {
+      "source": "pixabay",
+      "id": 335069,
+      "category": "city-architecture",
+      "download_url": "https://cdn.pixabay.com/video/2026/02/17/335069_large.mp4",
+      "width": 3840,
+      "height": 2160,
+      "author": "IAmTheDrama",
+      "author_url": "https://pixabay.com/users/54271003/",
+      "page_url": "https://pixabay.com/videos/id-335069/",
+      "likes": 22,
+      "views": 1513,
+      "license": "Pixabay Content License (free to use, no attribution required) - https://pixabay.com/service/license-summary/",
+      "downloaded_file": "videos/city-architecture/pixabay-335069.mp4"
     }
   ],
   "abstract": [
