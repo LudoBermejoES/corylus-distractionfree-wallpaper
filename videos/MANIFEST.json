@@ -4887,6 +4887,45 @@
       "page_url": "https://www.pexels.com/video/time-lapse-video-of-car-travelling-855473/",
       "license": "Pexels License (free to use, no attribution required) - https://www.pexels.com/license/",
       "downloaded_file": "videos/vehicles/pexels-855473.mp4"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-1",
+      "category": "vehicles",
+      "description": "Coastal line: open sea, sea wall and winter grass seen from a train window.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 60,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-1.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-2",
+      "category": "vehicles",
+      "description": "Suburban Tokyo: houses, walls and overhead lines passing at speed.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 60,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-2.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-3",
+      "category": "vehicles",
+      "description": "Elevated city line: river crossing, bridges and a skyline under overcast sky.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 60,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-3.webm"
     }
   ],
   "animals": [
