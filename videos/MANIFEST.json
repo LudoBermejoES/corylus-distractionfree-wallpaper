@@ -4965,6 +4965,58 @@
       "author": "Ludo Bermejo",
       "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
       "downloaded_file": "videos/vehicles/train-scene-3-long.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-4",
+      "category": "vehicles",
+      "description": "Sunny countryside: rice paddies, farmhouses and distant mountains under a cumulus sky, seen from a train window.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 60,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-4.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-4-long",
+      "category": "vehicles",
+      "description": "Sunny countryside: rice paddies, farmhouses and distant mountains under a cumulus sky, seen from a train window. Extended loop.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 76,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-4-long.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-5",
+      "category": "vehicles",
+      "description": "Overcast waterfront: a wide river crossing, bridges and the Tokyo skyline over still grey water.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 60,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-5.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-5-long",
+      "category": "vehicles",
+      "description": "Overcast waterfront: a wide river crossing, bridges and the Tokyo skyline over still grey water. Extended loop.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 142,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-5-long.webm"
     }
   ],
   "animals": [
