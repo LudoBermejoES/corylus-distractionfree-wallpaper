@@ -97,14 +97,16 @@
     items.forEach((item, idx) => {
       if (item.kind === "video") {
         html += `
-          <div class="item-tile" data-idx="${idx}" data-kind="${kind}" data-category="${escapeHtml(category)}">
+          <div class="item-tile" data-idx="${idx}" data-kind="${kind}" data-category="${escapeHtml(category)}" title="${escapeHtml(item.title || item.filename)}">
             <video muted loop playsinline preload="none" data-src="${escapeHtml(item.thumbUrl)}"></video>
             <span class="item-tile__badge">&#9654;</span>
+            <span class="item-tile__title">${escapeHtml(item.title || item.filename)}</span>
           </div>`;
       } else {
         html += `
-          <div class="item-tile" data-idx="${idx}" data-kind="${kind}" data-category="${escapeHtml(category)}">
-            <img loading="lazy" data-src="${escapeHtml(item.thumbUrl)}" alt="${escapeHtml(item.filename)}">
+          <div class="item-tile" data-idx="${idx}" data-kind="${kind}" data-category="${escapeHtml(category)}" title="${escapeHtml(item.title || item.filename)}">
+            <img loading="lazy" data-src="${escapeHtml(item.thumbUrl)}" alt="${escapeHtml(item.title || item.filename)}">
+            <span class="item-tile__title">${escapeHtml(item.title || item.filename)}</span>
           </div>`;
       }
     });
@@ -129,7 +131,11 @@
     }
     lightboxContent.innerHTML = mediaHtml;
 
-    let metaHtml = `<div class="filename">${escapeHtml(item.filename)} &middot; ${escapeHtml(item.category)}</div>`;
+    let metaHtml = "";
+    if (item.description) {
+      metaHtml += `<div class="description">${escapeHtml(item.description)}</div>`;
+    }
+    metaHtml += `<div class="filename">${escapeHtml(item.filename)} &middot; ${escapeHtml(item.category)}</div>`;
     if (item.credit && item.credit.author) {
       const authorLink = item.credit.authorUrl
         ? `<a href="${escapeHtml(item.credit.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(item.credit.author)}</a>`

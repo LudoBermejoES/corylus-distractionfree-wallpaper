@@ -65,8 +65,22 @@ def load_video_credits():
                 "license": e.get("license"),
                 "source": e.get("source"),
                 "pageUrl": e.get("page_url"),
+                "description": e.get("description"),
             }
     return by_stem
+
+
+def title_for(filename, description):
+    """Human label for a tile: the manifest description, else the bare stem.
+
+    Most of the collection is inherited from the upstream wallpaper fork and
+    has no description, so the stem is all there is -- still better than an
+    unlabelled thumbnail when you are trying to tell two clips apart.
+    """
+    if description:
+        return description
+    stem = os.path.splitext(filename)[0]
+    return stem.replace("_", " ").replace("-", " ").strip()
 
 
 def find_media_files():
@@ -245,11 +259,18 @@ def build(repo, branch):
             "thumbUrl": f"thumbs/{thumb_rel.replace(os.sep, '/')}",
         }
 
+        description = None
         if kind == "video":
             stem = os.path.splitext(filename)[0]
             credit = credits.get(stem)
             if credit:
-                item["credit"] = {k: v for k, v in credit.items() if v}
+                description = credit.get("description")
+                item["credit"] = {
+                    k: v for k, v in credit.items() if v and k != "description"
+                }
+        item["title"] = title_for(filename, description)
+        if description:
+            item["description"] = description
 
         items.append(item)
 
