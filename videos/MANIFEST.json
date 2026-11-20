@@ -4926,6 +4926,45 @@
       "author": "Ludo Bermejo",
       "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
       "downloaded_file": "videos/vehicles/train-scene-3.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-1-long",
+      "category": "vehicles",
+      "description": "Coastal line: open sea, sea wall and winter grass seen from a train window. Extended loop.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 88,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-1-long.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-2-long",
+      "category": "vehicles",
+      "description": "Suburban Tokyo: houses, walls and overhead lines passing at speed. Extended loop.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 185,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-2-long.webm"
+    },
+    {
+      "source": "original",
+      "id": "train-scene-3-long",
+      "category": "vehicles",
+      "description": "Elevated city line: river crossing, bridges and a skyline under overcast sky. Extended loop.",
+      "width": 1920,
+      "height": 1080,
+      "duration_seconds": 150,
+      "loop": true,
+      "author": "Ludo Bermejo",
+      "license": "Original footage by Ludo Bermejo, included in this collection with permission. Free to use as a Corylus distraction-free background.",
+      "downloaded_file": "videos/vehicles/train-scene-3-long.webm"
     }
   ],
   "animals": [
