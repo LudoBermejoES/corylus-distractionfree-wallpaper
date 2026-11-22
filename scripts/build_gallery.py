@@ -4,14 +4,20 @@ thumbnails + gallery-index.json into site/, ready to publish to GitHub Pages.
 
 Usage: scripts/build_gallery.py [--repo owner/name] [--branch main]
 
+CI passes --branch "$GITHUB_SHA" so every rawUrl is pinned to the commit the
+site was built from: Corylus checks each download against the sha256 in this
+index, and a pinned URL never serves different bytes later.
+
 The published site (site/) contains ONLY the front-end, generated thumbnails,
 and the JSON index -- never the full-size media, which the front-end loads on
 demand from raw.githubusercontent.com. This keeps the Pages deployment well
 under GitHub's ~1 GB site limit even though the media itself is ~1.4 GB.
 """
 import argparse
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -212,6 +218,23 @@ def generate_image_thumb(src_abs, thumb_abs):
         return False, str(e)
 
 
+# Must match the id rule in Corylus (src-tauri/app/src/commands/deep_link.rs).
+ID_RE = re.compile(r"^(image|video|animated)/[a-z0-9-]{1,40}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$")
+
+
+def file_sha256(abs_path):
+    h = hashlib.sha256()
+    with open(abs_path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def cache_entry(value):
+    """Cache values were a bare blob hash before sha256 was cached alongside."""
+    return {"blob": value} if isinstance(value, str) else (value or {})
+
+
 def build(repo, branch):
     credits = load_video_credits()
     blob_hashes = load_git_blob_hashes()
@@ -229,7 +252,8 @@ def build(repo, branch):
         rel_key = rel_path.replace(os.sep, "/")
 
         current_hash = blob_hashes.get(rel_key)
-        cached_hash = old_cache.get(rel_key)
+        cached = cache_entry(old_cache.get(rel_key))
+        cached_hash = cached.get("blob")
         is_fresh = (
             current_hash is not None
             and current_hash == cached_hash
@@ -248,25 +272,37 @@ def build(repo, branch):
         else:
             reused += 1
 
+        # Hashing ~1.6 GB on every push is slow; the sha256 only changes with the blob.
+        if current_hash is not None and current_hash == cached_hash and cached.get("sha256"):
+            sha256 = cached["sha256"]
+        else:
+            sha256 = file_sha256(abs_path)
         if current_hash is not None:
-            new_cache[rel_key] = current_hash
+            new_cache[rel_key] = {"blob": current_hash, "sha256": sha256}
 
+        stem = os.path.splitext(filename)[0]
         item = {
+            "id": f"{kind}/{category}/{stem}",
             "kind": kind,
             "category": category,
             "filename": filename,
+            "size": os.path.getsize(abs_path),
+            "sha256": sha256,
             "rawUrl": raw_url(repo, branch, rel_key),
             "thumbUrl": f"thumbs/{thumb_rel.replace(os.sep, '/')}",
+            # Only the Pexels/Pixabay downloads record one; null shows as
+            # "Licence not recorded" in Corylus.
+            "license": None,
         }
 
         description = None
         if kind == "video":
-            stem = os.path.splitext(filename)[0]
             credit = credits.get(stem)
             if credit:
                 description = credit.get("description")
+                item["license"] = credit.get("license")
                 item["credit"] = {
-                    k: v for k, v in credit.items() if v and k != "description"
+                    k: v for k, v in credit.items() if v and k not in ("description", "license")
                 }
         item["title"] = title_for(filename, description)
         if description:
@@ -286,6 +322,26 @@ def build(repo, branch):
     return items, []
 
 
+def validate_items(items):
+    """Errors that must stop the build: Corylus refuses such items anyway."""
+    problems = []
+    seen = set()
+    for item in items:
+        iid = item.get("id", "")
+        if not ID_RE.match(iid) or ".." in iid:
+            problems.append(f"bad id: {iid!r}")
+        if iid in seen:
+            problems.append(f"duplicate id: {iid}")
+        seen.add(iid)
+        if not isinstance(item.get("size"), int) or item["size"] <= 0:
+            problems.append(f"{iid}: missing size")
+        if not re.fullmatch(r"[0-9a-f]{64}", item.get("sha256") or ""):
+            problems.append(f"{iid}: missing sha256")
+        if "license" not in item:
+            problems.append(f"{iid}: missing license")
+    return problems
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", default=DEFAULT_REPO)
@@ -300,6 +356,12 @@ def main():
         sys.exit(1)
     if errors:
         print(f"ERROR: {len(errors)} item(s) missing a thumbnail.", file=sys.stderr)
+        sys.exit(1)
+    problems = validate_items(items)
+    if problems:
+        print("ERROR: the index would publish invalid items:", file=sys.stderr)
+        for p in problems:
+            print(f"  - {p}", file=sys.stderr)
         sys.exit(1)
 
     with open(INDEX_PATH, "w", encoding="utf-8") as f:

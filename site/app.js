@@ -6,6 +6,7 @@
   "use strict";
 
   const KIND_LABELS = { image: "Images", video: "Videos", animated: "Animated" };
+  const CORYLUS_SITE = "https://corylus.ludobermejo.es/";
   const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let ITEMS = [];
@@ -140,11 +141,37 @@
       const authorLink = item.credit.authorUrl
         ? `<a href="${escapeHtml(item.credit.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(item.credit.author)}</a>`
         : escapeHtml(item.credit.author);
-      const licenseText = item.credit.license ? ` &middot; ${escapeHtml(item.credit.license)}` : "";
+      const licenseText = item.license ? ` &middot; ${escapeHtml(item.license)}` : "";
       metaHtml += `<div class="credit">By ${authorLink}${licenseText}</div>`;
     }
-    metaHtml += `<a class="download" href="${escapeHtml(item.rawUrl)}" download>Download</a>`;
+    metaHtml += `<div class="actions">`;
+    if (item.id) {
+      // Segments are encoded one by one: Corylus rejects a percent-encoded "/".
+      const linkId = item.id.split("/").map(encodeURIComponent).join("/");
+      metaHtml += `<a class="add-to-corylus" href="corylus://background?id=${escapeHtml(linkId)}">Add to Corylus</a>`;
+    }
+    metaHtml += `<a class="download" href="${escapeHtml(item.rawUrl)}" download>Download</a></div>`;
+    metaHtml += `<div class="get-corylus">Don't have Corylus? <a href="${CORYLUS_SITE}" target="_blank" rel="noopener">Get it free</a></div>`;
+    metaHtml += `<div class="not-installed" hidden>If nothing happened, Corylus may not be installed. <a href="${CORYLUS_SITE}" target="_blank" rel="noopener">Get Corylus</a> or use Download.</div>`;
     lightboxMeta.innerHTML = metaHtml;
+
+    const addLink = lightboxMeta.querySelector(".add-to-corylus");
+    if (addLink) {
+      addLink.addEventListener("click", () => {
+        // No browser API says whether a scheme is handled. If the page keeps
+        // visibility and focus for 2 s, assume nothing opened.
+        let left = false;
+        const onLeave = () => { left = true; };
+        document.addEventListener("visibilitychange", onLeave, { once: true });
+        window.addEventListener("blur", onLeave, { once: true });
+        setTimeout(() => {
+          document.removeEventListener("visibilitychange", onLeave);
+          window.removeEventListener("blur", onLeave);
+          const hint = lightboxMeta.querySelector(".not-installed");
+          if (!left && hint) hint.hidden = false;
+        }, 2000);
+      });
+    }
 
     lightbox.hidden = false;
     document.body.style.overflow = "hidden";
