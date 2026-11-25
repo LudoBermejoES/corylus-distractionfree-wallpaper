@@ -45,6 +45,8 @@
         const el = entry.target;
         lazyObserver.unobserve(el);
         if (el.tagName === "VIDEO") {
+          // The still first: it shows at once, and stays when motion is reduced.
+          if (el.dataset.poster && !el.poster) el.poster = el.dataset.poster;
           const src = el.dataset.src;
           if (src && !el.src) {
             el.src = src;
@@ -71,7 +73,7 @@
       html += `<section class="kind-group"><h2>${KIND_LABELS[kind] || kind}</h2><div class="category-grid">`;
       for (const [category, items] of [...byCat.entries()].sort()) {
         const cover = items[0];
-        const coverSrc = cover.kind === "video" ? "" : cover.thumbUrl;
+        const coverSrc = cover.kind === "video" ? cover.posterUrl || "" : cover.thumbUrl;
         html += `
           <a class="category-card" href="#/${kind}/${encodeURIComponent(category)}">
             ${coverSrc
@@ -99,7 +101,7 @@
       if (item.kind === "video") {
         html += `
           <div class="item-tile" data-idx="${idx}" data-kind="${kind}" data-category="${escapeHtml(category)}" title="${escapeHtml(item.title || item.filename)}">
-            <video muted loop playsinline preload="none" data-src="${escapeHtml(item.thumbUrl)}"></video>
+            <video muted loop playsinline preload="none" data-src="${escapeHtml(item.thumbUrl)}"${item.posterUrl ? ` data-poster="${escapeHtml(item.posterUrl)}"` : ""}></video>
             <span class="item-tile__badge">&#9654;</span>
             <span class="item-tile__title">${escapeHtml(item.title || item.filename)}</span>
           </div>`;

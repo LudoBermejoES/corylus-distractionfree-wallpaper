@@ -200,6 +200,32 @@ def generate_video_preview(src_abs, thumb_abs):
     return result.returncode == 0, result.stderr
 
 
+def poster_rel_path(thumb_rel):
+    """A video's still poster sits next to its preview clip: same stem, .jpg."""
+    return os.path.splitext(thumb_rel)[0] + ".jpg"
+
+
+def generate_video_poster(src_abs, poster_abs):
+    """One still frame (1s in, or the first frame of a short clip) as a JPEG.
+
+    Shown before the preview clip loads, as the category cover, and instead of
+    motion when the visitor prefers reduced motion.
+    """
+    os.makedirs(os.path.dirname(poster_abs), exist_ok=True)
+    result = None
+    for start in ("1", "0"):
+        cmd = [
+            "ffmpeg", "-y", "-hide_banner", "-loglevel", "error",
+            "-ss", start, "-i", src_abs, "-frames:v", "1",
+            "-vf", f"scale={THUMB_WIDTH}:-2", "-q:v", "4",
+            poster_abs,
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0 and os.path.isfile(poster_abs):
+            return True, ""
+    return False, result.stderr if result else "ffmpeg did not run"
+
+
 def generate_image_thumb(src_abs, thumb_abs):
     from PIL import Image
 
@@ -272,6 +298,17 @@ def build(repo, branch):
         else:
             reused += 1
 
+        poster_rel = None
+        if kind == "video":
+            poster_rel = poster_rel_path(thumb_rel)
+            poster_abs = os.path.join(THUMBS_DIR, poster_rel)
+            # Own freshness check, so adding posters does not re-encode every preview clip.
+            if not (is_fresh and os.path.isfile(poster_abs)):
+                ok, err = generate_video_poster(abs_path, poster_abs)
+                if not ok:
+                    errors.append(f"{rel_path} (poster): {err.strip()}")
+                    continue
+
         # Hashing ~1.6 GB on every push is slow; the sha256 only changes with the blob.
         if current_hash is not None and current_hash == cached_hash and cached.get("sha256"):
             sha256 = cached["sha256"]
@@ -290,6 +327,8 @@ def build(repo, branch):
             "sha256": sha256,
             "rawUrl": raw_url(repo, branch, rel_key),
             "thumbUrl": f"thumbs/{thumb_rel.replace(os.sep, '/')}",
+            # Videos only: a still frame for the tile and the category cover.
+            "posterUrl": f"thumbs/{poster_rel.replace(os.sep, '/')}" if poster_rel else None,
             # Only the Pexels/Pixabay downloads record one; null shows as
             # "Licence not recorded" in Corylus.
             "license": None,
